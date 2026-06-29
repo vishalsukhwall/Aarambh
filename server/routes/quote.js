@@ -68,21 +68,20 @@ router.post('/', async (req, res) => {
       throw new Error('SMTP credentials (EMAIL_USER or EMAIL_PASS) are missing in the server configuration.');
     }
 
-    // Configure SMTP Transporter using host for better stability
-    // ✅ YEH VALA CODE CHIPKA DO
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587, // 465 ki jagah 587 block nahi hota
-  secure: false, // 587 ke liye secure hamesha false rahega
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS // Tumhara bina space wala app password
-  },
-  tls: {
-    rejectUnauthorized: false, // Yeh Render ke network block ko bypass karega
-    minVersion: 'TLSv1.2'
-  }
-});
+    // Configure SMTP Transporter — Port 587 (STARTTLS) for Render compatibility
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false, // false = STARTTLS; port 465 (SSL) is blocked on most cloud hosts
+      auth: {
+        user: emailUser,
+        pass: emailPass
+      },
+      tls: {
+        rejectUnauthorized: false, // bypass self-signed cert rejection on cloud servers
+        minVersion: 'TLSv1.2'
+      }
+    });
 
     const textContent = `
 ==================================================
