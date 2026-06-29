@@ -10,7 +10,15 @@ const app = express();
 connectDB();
 
 // Init Middleware
-app.use(cors());
+app.use(cors({
+  origin: [
+    'https://aarambh-git-main-vishal-sukhwal-s-projects.vercel.app',
+    'https://www.aarambhh.com',
+    'http://localhost:5173',
+    'http://localhost:3000'
+  ],
+  credentials: true
+}));
 app.use(express.json({ extended: false }));
 
 // Define Routes
